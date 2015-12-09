@@ -37,7 +37,7 @@ public class Main extends JFrame implements ActionListener
     //Set up the GUI.
     desktop = new JDesktopPane(); //a specialized layered pane
     setJMenuBar(createMenuBar());
-    createFrame(new CheckPanel()); //create first "window"
+    createFrame(new Step1Panel()); //create first "window"
     setContentPane(desktop);
 
     //Make dragging a little faster but perhaps uglier.
