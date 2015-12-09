@@ -40,6 +40,13 @@ public class SmallWebButton extends JButton
     setSmallLook();
   }
 
+  public SmallWebButton( String text, ActionListener actionListener )
+  {
+    super(text);
+    setSmallLook();
+    addActionListener(actionListener);
+  }
+
   public SmallWebButton( String text, String actionCommand )
   {
     super(text);
