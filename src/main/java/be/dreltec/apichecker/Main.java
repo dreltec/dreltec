@@ -2,6 +2,7 @@ package be.dreltec.apichecker;
 
 import be.dreltec.gui.GridPanel;
 import be.dreltec.gui.MyInternalFrame;
+import com.beimin.eveapi.parser.ApiAuthorization;
 
 import javax.swing.*;
 import java.awt.Dimension;
@@ -12,6 +13,8 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * @author <a href="mailto:pgeuens@uzbrussel.be?Subject=be.dreltec.apichecker.Main">Peter Geuens</a>
@@ -37,7 +40,7 @@ public class Main extends JFrame implements ActionListener
     //Set up the GUI.
     desktop = new JDesktopPane(); //a specialized layered pane
     setJMenuBar(createMenuBar());
-    createFrame(new Step1Panel()); //create first "window"
+    createFrame(new Step1Panel(this)); //create first "window"
     setContentPane(desktop);
 
     //Make dragging a little faster but perhaps uglier.
@@ -88,7 +91,7 @@ public class Main extends JFrame implements ActionListener
   {
     if ( "new".equals(e.getActionCommand()) )
       { //new
-      createFrame(new CheckPanel());
+//      createFrame(new CheckPanel(api));
       }
     else
       { //quit
@@ -106,7 +109,6 @@ public class Main extends JFrame implements ActionListener
     windowsMenu.add(menuItem);
     frame.addPropertyChangeListener(new PropertyChangeListener()
     {
-      @Override
       public void propertyChange( PropertyChangeEvent evt )
       {
         if ( evt.getPropertyName().equals(JInternalFrame.TITLE_PROPERTY))
@@ -115,7 +117,6 @@ public class Main extends JFrame implements ActionListener
     });
     menuItem.addActionListener(new ActionListener()
     {
-      @Override
       public void actionPerformed( ActionEvent e )
       {
         try
@@ -178,4 +179,12 @@ public class Main extends JFrame implements ActionListener
   }
 
 
+  public void startParsing( Set<ApiAuthorization> apiAuthorizations )
+  {
+    createFrame(new CheckPanel(apiAuthorizations));
+    for (ApiAuthorization apiAuthorization : apiAuthorizations)
+      {
+      System.out.println("apiAuthorization = "+apiAuthorization);
+      }
+  }
 }

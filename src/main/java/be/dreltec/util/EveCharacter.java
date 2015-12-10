@@ -3,8 +3,16 @@ package be.dreltec.util;
 import com.beimin.eveapi.exception.ApiException;
 import com.beimin.eveapi.model.account.ApiKeyInfo;
 import com.beimin.eveapi.parser.ApiAuthorization;
+import com.beimin.eveapi.parser.eve.CharacterInfoParser;
 import com.beimin.eveapi.parser.pilot.CharacterSheetParser;
+import com.beimin.eveapi.parser.pilot.KillLogParser;
+import com.beimin.eveapi.parser.pilot.MailMessagesParser;
+import com.beimin.eveapi.parser.pilot.StandingsParser;
+import com.beimin.eveapi.response.eve.CharacterInfoResponse;
 import com.beimin.eveapi.response.pilot.CharacterSheetResponse;
+import com.beimin.eveapi.response.pilot.MailMessagesResponse;
+import com.beimin.eveapi.response.shared.KillLogResponse;
+import com.beimin.eveapi.response.shared.StandingsResponse;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,8 +26,17 @@ public class EveCharacter
   public ApiAuthorization apiAuthorization;
 
   public CharacterSheetResponse charSheetResponse;
+  public MailMessagesResponse   mailMessagesResponse;
+  public KillLogResponse        killLogResponse;
+  public StandingsResponse      standingsResponse;
+  public CharacterInfoResponse  charInfoResponse;
 
   private boolean isCharSheetResponseLoaded;
+  private boolean isMailResponseLoaded;
+  private boolean isKillLogResponseLoaded;
+  private boolean isStandingsResponseLoaded;
+  private boolean isCharInfoResponseLoaded;
+
   private Set<Exception> parseExceptions;
 
   public EveCharacter( ApiKeyInfo apiKeyInfo, ApiAuthorization apiAuthorization )
@@ -34,7 +51,11 @@ public class EveCharacter
 
   public void load()
   {
-   loadCharSheetResponse();
+    loadCharSheetResponse();
+    loadMails();
+    loadKillLogs();
+    loadCharInfo();
+    loadStandings();
   }
 
   private void loadCharSheetResponse()
@@ -51,5 +72,75 @@ public class EveCharacter
         parseExceptions = new HashSet<Exception>();
       parseExceptions.add(e);
       }
+  }
+
+  private void loadMails()
+  {
+    try
+      {
+      MailMessagesParser messagesParser = new MailMessagesParser();
+      mailMessagesResponse = messagesParser.getResponse(apiAuthorization);
+      isMailResponseLoaded = true;
+      }
+    catch (ApiException e)
+      {
+      if ( parseExceptions == null )
+        parseExceptions = new HashSet<Exception>();
+      parseExceptions.add(e);
+      }
+  }
+
+  private void loadKillLogs()
+  {
+    try
+      {
+      KillLogParser parser = new KillLogParser();
+      killLogResponse = parser.getResponse(apiAuthorization);
+      isKillLogResponseLoaded = true;
+      }
+    catch (ApiException e)
+      {
+      if ( parseExceptions == null )
+        parseExceptions = new HashSet<Exception>();
+      parseExceptions.add(e);
+      }
+  }
+
+  private void loadStandings()
+  {
+    try
+      {
+      StandingsParser standingsParser = new StandingsParser();
+      standingsResponse = standingsParser.getResponse(apiAuthorization);
+      isStandingsResponseLoaded = true;
+      }
+    catch (ApiException e)
+      {
+      if ( parseExceptions == null )
+        parseExceptions = new HashSet<Exception>();
+      parseExceptions.add(e);
+      }
+  }
+
+  private void loadCharInfo()
+  {
+    try
+      {
+      CharacterInfoParser infoParser = new CharacterInfoParser();
+      charInfoResponse = infoParser.getResponse(apiAuthorization);
+      isCharInfoResponseLoaded = true;
+      }
+    catch (ApiException e)
+      {
+      if ( parseExceptions == null )
+        parseExceptions = new HashSet<Exception>();
+      parseExceptions.add(e);
+      }
+  }
+
+  @Override
+  public String toString()
+  {
+    return charSheetResponse.getName();
   }
 }

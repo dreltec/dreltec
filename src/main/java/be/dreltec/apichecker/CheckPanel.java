@@ -11,7 +11,9 @@ import com.beimin.eveapi.parser.account.ApiKeyInfoParser;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,13 +35,9 @@ public class CheckPanel extends GridPanel
 
   public CheckPanel(Set<ApiAuthorization> apiAuthorisations)
   {
-    DefaultMutableTreeNode top =
-        new DefaultMutableTreeNode("header");
-    createNodes(apiAuthorisations, top);
-    JTree jtree = new JTree(top);
-    jtree.setCellRenderer(new DefaultTreeCellRenderer() {});
+
     createComponents();
-    layoutComponents();
+    layoutComponents(apiAuthorisations);
   }
 
 
@@ -63,27 +61,39 @@ public class CheckPanel extends GridPanel
 
   }
 
-  public void layoutComponents()
+  public void layoutComponents( Set<ApiAuthorization> apiAuthorisations)
   {
-    startGrid();
-    addRow(getLabel("header component"));
-    setWeightsX(1.0);
-    setWeightY(1.0);
-    setFills(GridBagConstraints.BOTH);
-    addRow(makeTabbedPane());
-    setWeightY(0.0);
-    addTab("tab1");
-    startGrid();
-    addRow(getLabel("row1_1"));
-    addRow(getLabel("row1_2"));
-    addFillerRow();
-    addTab("tab2");
-    startGrid();
-    addRow(getLabel("row2_1"));
-    addRow(getLabel("row2_2"));
-    addFillerRow();
-    stopTabbedPane();
-    addRow(getLabel("footer component"));
+    DefaultMutableTreeNode top =
+        new DefaultMutableTreeNode("header");
+    createNodes(apiAuthorisations, top);
+    JTree jtree = new JTree(top);
+    jtree.setCellRenderer(new DefaultTreeCellRenderer()
+    {
+    });
+
+    setLayout(new BorderLayout());
+    add(jtree, BorderLayout.WEST);
+    GridPanel panel = new GridPanel();
+    panel.startGrid();
+    panel.addRow(getLabel("header component"));
+    panel.setWeightsX(1.0);
+    panel.setWeightY(1.0);
+    panel.setFills(GridBagConstraints.BOTH);
+    panel.addRow(panel.makeTabbedPane());
+    panel.setWeightY(0.0);
+    panel.addTab("tab1");
+    panel.startGrid();
+    panel.addRow(getLabel("row1_1"));
+    panel.addRow(getLabel("row1_2"));
+    panel.addFillerRow();
+    panel.addTab("tab2");
+    panel.startGrid();
+    panel.addRow(getLabel("row2_1"));
+    panel.addRow(getLabel("row2_2"));
+    panel.addFillerRow();
+    panel.stopTabbedPane();
+    panel.addRow(getLabel("footer component"));
+    add(panel, BorderLayout.CENTER);
   }
 
   private void createNodes( Set<ApiAuthorization> apiAuthorisations, DefaultMutableTreeNode top )

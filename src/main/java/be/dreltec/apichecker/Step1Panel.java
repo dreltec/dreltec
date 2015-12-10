@@ -19,6 +19,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -28,14 +29,18 @@ import java.util.Vector;
 
 public class Step1Panel extends GridPanel
 {
+  private Main main;
+
   private JTextField applicationField;
   private JTextField apiKeyField;
   private JTextField vCodeField;
 
   private JTable apiTable;
+  private Set<ApiAuthorization> apiKeys= new HashSet<ApiAuthorization>();
 
-  public Step1Panel()
+  public Step1Panel( Main main)
   {
+    this.main = main;
     createComponents();
     layoutComponents();
   }
@@ -45,7 +50,6 @@ public class Step1Panel extends GridPanel
     applicationField = getTextField(50);
     applicationField.addActionListener(new ActionListener()
     {
-      @Override
       public void actionPerformed( ActionEvent e )
       {
         parseApplication();
@@ -55,7 +59,6 @@ public class Step1Panel extends GridPanel
     apiKeyField = getTextField(50);
     apiKeyField.addActionListener(new ActionListener()
     {
-      @Override
       public void actionPerformed( ActionEvent e )
       {
         checkKey();
@@ -64,7 +67,6 @@ public class Step1Panel extends GridPanel
     vCodeField = getTextField(50);
     vCodeField.addActionListener(new ActionListener()
     {
-      @Override
       public void actionPerformed( ActionEvent e )
       {
         checkKey();
@@ -72,7 +74,7 @@ public class Step1Panel extends GridPanel
     });
 
     Vector<String> columnNames= new Vector<String>();
-    columnNames.addAll(Arrays.asList("key", "mask", "type", "names"));
+    columnNames.addAll(Arrays.asList("key", "vCode", "mask", "type", "names"));
     apiTable= new JTable(new Vector(), columnNames);
 
   }
@@ -84,7 +86,15 @@ public class Step1Panel extends GridPanel
     addRow(getLabel("Api:"), apiKeyField, new SmallWebButton("?", getAL(apiKeyField)));
     addRow(getLabel("vCode:"), vCodeField, new SmallWebButton("?", getAL(vCodeField)));
     setFills(GridBagConstraints.EAST);
-    addRow(new SmallWebButton("Check Apis"), getDummy(), getDummy());
+    SmallWebButton button = new SmallWebButton("Start Api Check");
+    button.addActionListener(new ActionListener()
+    {
+      public void actionPerformed( ActionEvent e )
+      {
+        main.startParsing(apiKeys );
+      }
+    });
+    addRow(button, getDummy(), getDummy());
 //    addFillerRow();
 //    addFillerCol();
     addScrollPane(apiTable);
@@ -126,6 +136,7 @@ public class Step1Panel extends GridPanel
   {
     Vector<String> data = new Vector<String>();
     data.add(Integer.toString(apiAuthorization.getKeyID()));
+    data.add(apiAuthorization.getVCode());
 
     ApiKeyInfo info = getApiKey(apiAuthorization);
     if ( info != null )
@@ -149,6 +160,7 @@ public class Step1Panel extends GridPanel
       }
 
     ( (DefaultTableModel) apiTable.getModel() ).addRow(data);
+    apiKeys.add(apiAuthorization);
 
   }
 
@@ -171,7 +183,6 @@ public class Step1Panel extends GridPanel
   {
     return new ActionListener()
     {
-      @Override
       public void actionPerformed( ActionEvent e )
       {
         field.postActionEvent();
@@ -179,33 +190,4 @@ public class Step1Panel extends GridPanel
     };
   }
 
-  @SuppressWarnings("MagicNumber")
-  public static void main( String[] args )
-  {
-    EventQueue.invokeLater(new Runnable()
-    {
-      public void run()
-      {
-
-        Step1Panel demo = new Step1Panel();
-        JFrame frame = new JFrame();
-        Container cp = frame.getContentPane();
-        cp.add(demo);
-
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-        Rectangle rectangle = frame.getBounds();
-        rectangle.setSize(screenWidth, screenHeight);
-        frame.setBounds(0, 0, screenWidth, screenHeight);
-        frame.setSize(screenWidth, screenHeight);
-//        getFrame().doLayout();
-//        getFrame().validate();
-//        updateUI();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-      }
-    });
-  }
 }
