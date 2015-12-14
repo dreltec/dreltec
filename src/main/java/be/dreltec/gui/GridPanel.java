@@ -179,6 +179,16 @@ public class GridPanel extends JPanel
     tabbedPane.addTab(title, currentPanel);
   }
 
+  public void addTab( String title, GridPanel panel )
+  {
+    if ( tabbedPane == null )
+      {
+      throw new IllegalStateException("There is not tabbed pane ready: you forgot something like startTabbedPaneAsBorderLayout() ||  demo.addRow(demo.makeTabbedPane()); ");
+      }
+    currentPanel = panel;
+    tabbedPane.addTab(title, currentPanel);
+  }
+
   public void addTabAndStartGrid( String title )
   {
     addTab(title);

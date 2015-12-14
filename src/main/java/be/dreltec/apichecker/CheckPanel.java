@@ -9,6 +9,8 @@ import com.beimin.eveapi.parser.ApiAuthorization;
 import com.beimin.eveapi.parser.account.ApiKeyInfoParser;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.awt.BorderLayout;
@@ -32,6 +34,9 @@ import java.util.concurrent.TimeUnit;
 
 public class CheckPanel extends GridPanel
 {
+
+  private Set<CharacterDetailpanel> detailPanels = new HashSet<CharacterDetailpanel>();
+  private OverviewPanel overviewPanel = new OverviewPanel();
 
   public CheckPanel(Set<ApiAuthorization> apiAuthorisations)
   {
@@ -58,7 +63,8 @@ public class CheckPanel extends GridPanel
 
   public void createComponents()
   {
-
+    overviewPanel = new OverviewPanel();
+    detailPanels.add(overviewPanel);
   }
 
   public void layoutComponents( Set<ApiAuthorization> apiAuthorisations)
@@ -70,27 +76,33 @@ public class CheckPanel extends GridPanel
     jtree.setCellRenderer(new DefaultTreeCellRenderer()
     {
     });
+    jtree.addTreeSelectionListener(new TreeSelectionListener()
+    {
+      public void valueChanged( TreeSelectionEvent e )
+      {
+        if ( ( (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent() ).getUserObject() instanceof EveCharacter )
+          {
+          for (CharacterDetailpanel panel : detailPanels)
+            {
+            panel.load((EveCharacter) ( (DefaultMutableTreeNode) e.getNewLeadSelectionPath().getLastPathComponent() ).getUserObject());
+            }
+          }
+      }
+    });
 
     setLayout(new BorderLayout());
     add(jtree, BorderLayout.WEST);
     GridPanel panel = new GridPanel();
     panel.startGrid();
-    panel.addRow(getLabel("header component"));
+//    panel.addRow(getLabel("header component"));
+//    panel.setWeightsX(1.0);
+//    panel.setWeightY(1.0);
+    panel.setFills(GridBagConstraints.BOTH);
     panel.setWeightsX(1.0);
     panel.setWeightY(1.0);
-    panel.setFills(GridBagConstraints.BOTH);
+    setFills(GridBagConstraints.BOTH);
     panel.addRow(panel.makeTabbedPane());
-    panel.setWeightY(0.0);
-    panel.addTab("tab1");
-    panel.startGrid();
-    panel.addRow(getLabel("row1_1"));
-    panel.addRow(getLabel("row1_2"));
-    panel.addFillerRow();
-    panel.addTab("tab2");
-    panel.startGrid();
-    panel.addRow(getLabel("row2_1"));
-    panel.addRow(getLabel("row2_2"));
-    panel.addFillerRow();
+    panel.addTab("Overview", overviewPanel );
     panel.stopTabbedPane();
     panel.addRow(getLabel("footer component"));
     add(panel, BorderLayout.CENTER);

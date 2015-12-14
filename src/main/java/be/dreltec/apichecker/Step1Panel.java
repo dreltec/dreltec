@@ -48,6 +48,10 @@ public class Step1Panel extends GridPanel
   public void createComponents()
   {
     applicationField = getTextField(50);
+    applicationField.setText("4551472\n"+
+                                 " Verification Code: yipmAu36lg9tBwtdy1bl9HcBFFH2Eg7MGC0KStbWwFJMDKepx0xzjMUbfkkU5MjA \n"+
+                                 "Access Mask: 1073741823\n"+
+                                 "Expires: 2016-07-24");
     applicationField.addActionListener(new ActionListener()
     {
       public void actionPerformed( ActionEvent e )

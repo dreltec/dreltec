@@ -18,8 +18,10 @@ import com.beimin.eveapi.response.shared.StandingsResponse;
 import com.beimin.eveapi.response.shared.WalletJournalResponse;
 import com.beimin.eveapi.response.shared.WalletTransactionsResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,7 +36,7 @@ public class EveCharacter
   public CharacterSheetResponse charSheetResponse;
   public CharacterInfoResponse  charInfoResponse;
   public MailMessagesResponse   mailMessagesResponse;
-  public Set<Notification>      notifications;
+  public List<EveNotification>  eveNotifications = new ArrayList<EveNotification>();
   public WalletJournalResponse  walletJournalResponse;
   public WalletTransactionsResponse walletTransactionsResponse;
   public KillLogResponse        killLogResponse;
@@ -212,20 +214,33 @@ public class EveCharacter
       NotificationsParser  notificationsParser = new NotificationsParser();
       NotificationTextsParser  notificationsTextParser = new NotificationTextsParser();
       NotificationsResponse notificationsResponse = notificationsParser.getResponse(apiAuthorization);
-      NotificationTextsResponse notificationTextsResponse = notificationsTextParser.getResponse(apiAuthorization);
-      notifications = notificationsResponse.getAll();
-      Set<NotificationText> notificationTexts = notificationTextsResponse.getAll();
 
-      //todo documentation says its need a list of id's to be passed along so might not work as intended
+
+      Set<Notification> notifications = notificationsResponse.getAll();
+
+      long [] ids = new long[notifications.size()];
+      Notification [] toArray = notifications.toArray(new Notification[ids.length]);
+      //<Long> notificationTexts = notificationTextsResponse.getAll();
+      for (int i = 0; i< ids.length; i++ )
+        {
+        ids[i]= toArray[i].getNotificationID();
+        }
+      NotificationTextsResponse notificationTextsResponse = notificationsTextParser.getResponse(apiAuthorization, ids );
       Map<Long, NotificationText> texts =  new HashMap<Long,NotificationText>();
-      for (NotificationText text : notificationTexts)
+      for (NotificationText text : notificationTextsResponse.getAll() )
         {
         texts.put(text.getNotificationID(), text);
         }
-//      for (Notification notification : notifications)
-//        {
-//        notification.NotificationType
-//        }
+
+      for (Notification notification : notifications)
+        {
+        EveNotification eveNotification = new EveNotification();
+        eveNotification.setSender(PublicCharacterUtil.loadCharacter(notification.getSenderID() ));
+        eveNotification.type = notification.getType();
+        eveNotification.text = texts.get(notification.getNotificationID()).getText();
+        eveNotifications.add(eveNotification);
+        }
+
       isNotificationsResponseLoaded = true;
       }
     catch (ApiException e)
