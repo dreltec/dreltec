@@ -630,11 +630,11 @@ public class GridPanel extends JPanel
     checkConstraints();
     if ( maxGridY == -1 )
       {
-      constraints.setGxGyGwGhWxWyFillAnchorInsets(0, gridY, gridX, 1, 0.0, 1.0, GridBagConstraints.BOTH, getAnchor(gridX), insets);
+      constraints.setGxGyGwGhWxWyFillAnchorInsets(0, gridY, gridX, 1, 1.0, 1.0, GridBagConstraints.BOTH, getAnchor(gridX), insets);
       }
     else
       {
-      constraints.setGxGyGwGhWxWyFillAnchorInsets(0, maxGridY, gridX, 1, 0.0, 1.0, GridBagConstraints.BOTH, getAnchor(gridX), insets);
+      constraints.setGxGyGwGhWxWyFillAnchorInsets(0, maxGridY, gridX, 1, 1.0, 1.0, GridBagConstraints.BOTH, getAnchor(gridX), insets);
       }
     add(new JScrollPane(component), constraints);
     gridY++;
