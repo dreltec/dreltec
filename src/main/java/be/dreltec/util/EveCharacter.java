@@ -43,16 +43,17 @@ public class EveCharacter
   public ContractsResponse      contractsResponse;
 
   public StandingsResponse      standingsResponse;
-  private boolean isCharSheetResponseLoaded;
-  private boolean isCharInfoResponseLoaded;
-  private boolean isMailResponseLoaded;
-  private boolean isNotificationsResponseLoaded;
-  private boolean isWalletJournalResponseLoaded;
-  private boolean isWalletTransactionsResponseLoaded;
-  private boolean isKillLogResponseLoaded;
-  private boolean isContractsResponseLoaded;
 
-  private boolean isStandingsResponseLoaded;
+  public boolean isCharSheetResponseLoaded;
+  public boolean isCharInfoResponseLoaded;
+  public boolean isMailResponseLoaded;
+  public boolean isNotificationsResponseLoaded;
+  public boolean isWalletJournalResponseLoaded;
+  public boolean isWalletTransactionsResponseLoaded;
+  public boolean isKillLogResponseLoaded;
+  public boolean isContractsResponseLoaded;
+  public boolean isStandingsResponseLoaded;
+
   private Set<Exception> parseExceptions;
 
   public EveCharacter( ApiKeyInfo apiKeyInfo, ApiAuthorization apiAuthorization )
