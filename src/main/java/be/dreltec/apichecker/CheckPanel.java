@@ -37,6 +37,7 @@ public class CheckPanel extends GridPanel
 
   private Set<CharacterDetailpanel> detailPanels = new HashSet<CharacterDetailpanel>();
   private OverviewPanel overviewPanel = new OverviewPanel();
+  private StandingsPanel standingsPanel = new StandingsPanel();
 
   public CheckPanel(Set<ApiAuthorization> apiAuthorisations)
   {
@@ -63,8 +64,8 @@ public class CheckPanel extends GridPanel
 
   public void createComponents()
   {
-    overviewPanel = new OverviewPanel();
     detailPanels.add(overviewPanel);
+    detailPanels.add(standingsPanel);
   }
 
   public void layoutComponents( Set<ApiAuthorization> apiAuthorisations)
@@ -103,6 +104,7 @@ public class CheckPanel extends GridPanel
     setFills(GridBagConstraints.BOTH);
     panel.addRow(panel.makeTabbedPane());
     panel.addTab("Overview", overviewPanel );
+    panel.addTab("Standings", standingsPanel );
     panel.stopTabbedPane();
     panel.addRow(getLabel("footer component"));
     add(panel, BorderLayout.CENTER);
